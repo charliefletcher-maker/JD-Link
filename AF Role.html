@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Artificial Societies — ML Engineer</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+  :root{
+    --bg: #F6F5F1;
+    --card: #FFFFFF;
+    --ink: #17171A;
+    --ink-dim: #6B6A6E;
+    --ink-faint: #A6A5A8;
+    --line: #E5E3DD;
+    --accent: #E9814F;
+    --accent-soft: rgba(233,129,79,0.12);
+    --shadow: 0 14px 34px rgba(23,23,26,0.07);
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter', sans-serif;
+    -webkit-font-smoothing:antialiased;
+    font-size:15px;
+  }
+
+  .wrap{ max-width:1180px; margin:0 auto; padding:0 40px; }
+  section{ position:relative; }
+  a{ color:inherit; }
+
+  h1,h2{ letter-spacing:-0.02em; font-weight:600; }
+
+  /* ---------- NAV ---------- */
+  nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:26px 40px; position:relative; z-index:5;
+  }
+  .brand{ display:flex; align-items:center; gap:10px; font-size:17px; font-weight:700; }
+  .brand svg{ width:16px; height:14px; }
+  .navright{ display:flex; align-items:center; gap:22px; }
+  .signin{ font-size:14px; color:var(--ink); text-decoration:none; font-weight:500; }
+  .book-btn{
+    background:var(--accent); color:#fff; font-size:14px; font-weight:600;
+    padding:11px 20px; border-radius:10px; text-decoration:none;
+  }
+  .poweredby{ display:flex; align-items:center; gap:7px; }
+  .poweredby .pb-label{ font-size:12px; color:var(--ink-faint); }
+  .poweredby .pb-mark{ font-size:10px; color:var(--accent); }
+  .poweredby .pb-name{ font-size:14px; font-weight:700; color:var(--ink); }
+
+  /* ---------- HERO ---------- */
+  .hero{ padding:40px 0 0; overflow:hidden; }
+  .dotgrid{
+    position:absolute; top:0; left:200px; width:260px; height:200px;
+    background-image: radial-gradient(circle, var(--accent) 1.4px, transparent 1.6px);
+    background-size:14px 14px;
+    -webkit-mask-image: radial-gradient(ellipse 130px 100px at 50% 30%, black 0%, transparent 75%);
+    mask-image: radial-gradient(ellipse 130px 100px at 50% 30%, black 0%, transparent 75%);
+    opacity:0.55; pointer-events:none;
+  }
+  .hero-grid{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:20px; align-items:center; padding:70px 0 90px; position:relative; z-index:2; }
+  .hero h1{ font-size:clamp(38px,5vw,58px); line-height:1.08; margin-bottom:22px; }
+  .hero h1 .accent{ color:var(--accent); display:block; }
+  .hero p.sub{ font-size:17px; color:var(--ink-dim); line-height:1.6; max-width:440px; margin-bottom:32px; }
+  .hero-cta{
+    display:inline-block; background:var(--accent); color:#fff; font-weight:600;
+    font-size:14.5px; padding:14px 26px; border-radius:10px; text-decoration:none;
+  }
+
+  .hero-visual{ position:relative; height:440px; }
+  #net{ position:absolute; inset:0; width:100%; height:100%; }
+  .profile-card{
+    position:absolute; left:2%; bottom:14%; width:280px;
+    background:var(--card); border-radius:16px; box-shadow:var(--shadow);
+    padding:18px 20px; z-index:3;
+  }
+  .profile-card .top{ display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+  .profile-card .avatar{
+    width:34px; height:34px; border-radius:50%; background:var(--accent-soft);
+    color:var(--accent); font-weight:700; font-size:12px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .profile-card .name{ font-size:14px; font-weight:600; }
+  .profile-card .role{ font-size:12px; color:var(--ink-faint); }
+  .profile-card .company{ font-size:12.5px; font-weight:600; margin-bottom:4px; }
+  .profile-card .desc{ font-size:11.5px; color:var(--ink-faint); line-height:1.5; margin-bottom:14px; }
+  .tag-row{ display:flex; gap:6px; flex-wrap:wrap; }
+  .tag{
+    font-size:10.5px; color:var(--ink-dim); border:1px solid var(--line);
+    border-radius:6px; padding:4px 8px; display:flex; align-items:center; gap:4px;
+  }
+
+  /* ---------- LOGO STRIP ---------- */
+  .logo-strip{ border-top:1px solid var(--line); padding:36px 0; }
+  .logo-strip .label{ text-align:center; font-size:12px; color:var(--ink-faint); margin-bottom:22px; }
+  .logo-row{ display:grid; border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+  .logo-row.row1{ grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .logo-row.row2{ grid-template-columns:repeat(5,minmax(0,1fr)); border-top:none; }
+  .logo-cell{
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    padding:22px 10px; border-right:1px solid var(--line); font-size:14px; font-weight:600;
+  }
+  .logo-row.row1 .logo-cell:last-child, .logo-row.row2 .logo-cell:last-child{ border-right:none; }
+  .logo-row.row2{ font-size:13px; }
+  .midlabel{ text-align:center; font-size:11.5px; color:var(--ink-faint); padding:16px 0 0; }
+
+  /* ---------- SECTION SCAFFOLD ---------- */
+  .section{ padding:90px 0; border-bottom:1px solid var(--line); }
+  .kicker{ font-size:12px; color:var(--accent); font-weight:600; text-transform:uppercase; letter-spacing:0.04em; margin-bottom:16px; }
+  .section h2{ font-size:clamp(26px,3vw,38px); line-height:1.2; max-width:600px; margin-bottom:16px; }
+  .section .lede{ font-size:16px; line-height:1.7; color:var(--ink-dim); max-width:600px; }
+
+  /* stat grid reused style */
+  .stat-grid{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); border-top:1px solid var(--line); border-bottom:1px solid var(--line); margin-top:48px; }
+  .stat{ padding:24px 22px; border-right:1px solid var(--line); }
+  .stat:last-child{ border-right:none; }
+  .stat .num{ font-size:26px; font-weight:700; margin-bottom:6px; }
+  .stat .num.accent{ color:var(--accent); }
+  .stat .desc{ font-size:12.5px; color:var(--ink-dim); line-height:1.5; }
+
+  .quote{ margin-top:44px; background:var(--card); border-radius:16px; box-shadow:var(--shadow); padding:32px 34px; max-width:640px; }
+  .quote p{ font-size:18px; line-height:1.55; color:var(--ink); font-weight:500; }
+  .quote .attr{ margin-top:14px; font-size:12.5px; color:var(--ink-faint); }
+
+  /* role cards */
+  .role-grid{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px; margin-top:48px; align-items:stretch; }
+  .role-card{ background:var(--card); border-radius:14px; box-shadow:var(--shadow); padding:26px; display:flex; flex-direction:column; }
+  .role-card .icn{ width:32px; height:32px; border-radius:9px; background:var(--accent-soft); color:var(--accent); font-weight:700; font-size:13px; display:flex; align-items:center; justify-content:center; margin-bottom:16px; }
+  .role-card h3{ font-size:15.5px; font-weight:600; margin-bottom:8px; }
+  .role-card p{ font-size:13.5px; line-height:1.6; color:var(--ink-dim); }
+
+  /* requirements */
+  .req-columns{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:16px; margin-top:48px; }
+  .req-block{ background:var(--card); border-radius:16px; box-shadow:var(--shadow); padding:30px; }
+  .req-block .head{ font-size:12.5px; font-weight:600; color:var(--ink-faint); text-transform:uppercase; letter-spacing:0.04em; margin-bottom:18px; }
+  .req-item{ display:flex; gap:10px; font-size:13.5px; line-height:1.6; color:var(--ink-dim); padding:11px 0; border-top:1px solid var(--line); }
+  .req-item:first-of-type{ border-top:none; }
+  .req-item strong{ color:var(--ink); font-weight:600; }
+  .req-item .dot{ width:5px; height:5px; border-radius:50%; background:var(--accent); margin-top:7px; flex-shrink:0; }
+
+  /* logistics grid — mirrors the investor logo grid pattern */
+  .logi-grid{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); border-top:1px solid var(--line); border-bottom:1px solid var(--line); margin-top:48px; }
+  .logi{ padding:22px; border-right:1px solid var(--line); }
+  .logi:last-child{ border-right:none; }
+  .logi .k{ font-size:11.5px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:0.04em; margin-bottom:8px; }
+  .logi .v{ font-size:17px; font-weight:600; }
+
+  /* apply */
+  .apply{ text-align:center; padding:110px 0; border-bottom:none; }
+  .apply h2{ margin:0 auto 16px; }
+  .apply p{ font-size:15.5px; color:var(--ink-dim); max-width:480px; margin:0 auto 32px; line-height:1.65; }
+  .apply-cta{ display:inline-block; background:var(--accent); color:#fff; font-weight:600; font-size:15px; padding:15px 30px; border-radius:10px; text-decoration:none; }
+  .apply .sign{ margin-top:20px; font-size:12.5px; color:var(--ink-faint); }
+
+  footer{ padding:30px 0; text-align:center; border-top:1px solid var(--line); }
+  footer p{ font-size:12px; color:var(--ink-faint); }
+
+  .reveal{ opacity:0; transform:translateY(14px); transition:opacity .6s ease, transform .6s ease; }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+
+  @media (max-width: 860px){
+    .hero-grid{ grid-template-columns:1fr; }
+    .hero-visual{ height:320px; }
+    .stat-grid, .logi-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .logo-row.row1, .logo-row.row2{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .role-grid, .req-columns{ grid-template-columns:1fr; }
+    .wrap{ padding:0 22px; }
+    nav{ padding:20px 22px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="brand">
+    <svg viewBox="0 0 200 200" fill="none" style="width:15px;height:19px;">
+      <polygon points="84,44 98,44 72,152 58,152" fill="black"/>
+      <polygon points="102,44 116,44 142,152 128,152" fill="black"/>
+    </svg>
+    Artificial Societies
+  </div>
+  <div class="poweredby">
+    <span class="pb-label">Powered by</span>
+    <span class="pb-mark">◆</span>
+    <span class="pb-name">Few&amp;Far.</span>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="dotgrid"></div>
+  <div class="wrap hero-grid">
+    <div>
+      <h1 class="reveal in">Frontier research,<span class="accent">Productionised.</span></h1>
+      <p class="sub reveal in">An ML Engineer role turning Societal World Model research — how opinion and influence move through a population — into systems the world's biggest organisations depend on.</p>
+    </div>
+    <div class="hero-visual">
+      <canvas id="net"></canvas>
+      <div class="profile-card reveal in">
+        <div class="top">
+          <div class="avatar">ML</div>
+          <div>
+            <div class="name">ML Engineer</div>
+            <div class="role">Research → Production</div>
+          </div>
+        </div>
+        <div class="company">Artificial Societies</div>
+        <div class="desc">Owning the path from prototype to a deployed capability clients rely on.</div>
+        <div class="tag-row">
+          <span class="tag">📍 London, UK</span>
+          <span class="tag">In-office</span>
+          <span class="tag">£100k–£180k</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="logo-strip">
+  <div class="wrap">
+    <div class="label">Informing strategies at organisations backed by</div>
+    <div class="logo-row row1">
+      <div class="logo-cell">Point72 Ventures</div>
+      <div class="logo-cell">Kindred Capital</div>
+      <div class="logo-cell">Y&nbsp;Combinator</div>
+    </div>
+    <div class="midlabel">With investors from</div>
+    <div class="logo-row row2" style="border-top:none; margin-top:16px;">
+      <div class="logo-cell">Sequoia</div>
+      <div class="logo-cell">Google</div>
+      <div class="logo-cell">DeepMind</div>
+      <div class="logo-cell">Prolific</div>
+      <div class="logo-cell">Strava</div>
+    </div>
+  </div>
+</div>
+
+<section class="section" id="problem">
+  <div class="wrap">
+    <div class="kicker">The problem</div>
+    <h2>An AlphaFold, but for how people think.</h2>
+    <p class="lede">Give 1,000 people a for-or-against position on 10 issues and there are 10<sup>3,000</sup> possible group opinion states. DeepMind only has to model 10<sup>300</sup> ways a protein can fold. Searching that space fast enough for a client to get an answer in hours, not months, is a frontier ML problem.</p>
+
+    <div class="stat-grid reveal in">
+      <div class="stat"><div class="num accent">$3T+</div><div class="desc">combined market cap of clients already informed by the platform</div></div>
+      <div class="stat"><div class="num">2%</div><div class="desc">of Google's global AI throughput, for a few seconds, in one client run</div></div>
+      <div class="stat"><div class="num">YC</div><div class="desc">backed, alongside Point72 Ventures, Kindred Capital, and DeepMind angels</div></div>
+      <div class="stat"><div class="num accent">10³⁰⁰⁰</div><div class="desc">possible opinion states in a population of 1,000 people across 10 issues</div></div>
+    </div>
+
+    <div class="quote reveal in">
+      <p>You'll be in charge of deploying the world's most advanced social simulation research into production, where it will shape decisions that shape the world.</p>
+      <div class="attr">— from the role brief</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="role">
+  <div class="wrap">
+    <div class="kicker">The role</div>
+    <h2>Own the path from research to production.</h2>
+    <p class="lede">You'll work directly with the CEO and Head of Research, and partner closely with research, product, and forward-deployed engineering.</p>
+
+    <div class="role-grid">
+      <div class="role-card reveal"><div class="icn">01</div><h3>Take research to production</h3><p>Own the path from a working prototype to a deployed capability clients depend on.</p></div>
+      <div class="role-card reveal"><div class="icn">02</div><h3>Post-train and distil models</h3><p>Fine-tuning, RL, and distillation to make the simulations more nuanced and accurate.</p></div>
+      <div class="role-card reveal"><div class="icn">03</div><h3>Own inference at scale</h3><p>Serve simulations of thousands of individuals efficiently and reliably.</p></div>
+      <div class="role-card reveal"><div class="icn">04</div><h3>Build the data engineering</h3><p>Design pipelines that turn messy real-world data into simulated populations.</p></div>
+      <div class="role-card reveal" style="grid-column:span 2;"><div class="icn">05</div><h3>Simplify aggressively</h3><p>A new research method can arrive with six ideas baked in. Know which one performs — build the simplest, most reliable version of it, and delete the rest.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="requirements">
+  <div class="wrap">
+    <div class="kicker">What they're looking for</div>
+    <h2>Depth in deep learning, not classical ML.</h2>
+    <p class="lede">Strong Python engineering, comfort with the maths, and genuine interest in the social-science side of the problem.</p>
+
+    <div class="req-columns">
+      <div class="req-block">
+        <div class="head">Core requirements</div>
+        <div class="req-item"><div class="dot"></div><div><strong>2+ years</strong> shipping ML in a startup — models in front of real users, not just a notebook.</div></div>
+        <div class="req-item"><div class="dot"></div><div>Hands-on with <strong>pre- or post-training language models</strong> — RL, fine-tuning, distillation, dataset and reward design.</div></div>
+        <div class="req-item"><div class="dot"></div><div><strong>Strong Python engineering</strong> — clean, well-structured code others can maintain.</div></div>
+        <div class="req-item"><div class="dot"></div><div>Fluent in <strong>statistics, probability, and high-dimensional spaces</strong>.</div></div>
+        <div class="req-item"><div class="dot"></div><div>Fast, with a high bar — ships quickly, goes deep enough to understand the problem.</div></div>
+        <div class="req-item"><div class="dot"></div><div>Genuinely curious about <strong>how opinions form</strong> — a social-science problem as much as an ML one.</div></div>
+      </div>
+      <div class="req-block">
+        <div class="head">Nice to have</div>
+        <div class="req-item"><div class="dot"></div><div>Has <strong>distilled a frontier model</strong> into a small open-weights one shipped to production.</div></div>
+        <div class="req-item"><div class="dot"></div><div>Experience with <strong>distributed training or inference optimisation</strong> at scale.</div></div>
+        <div class="req-item"><div class="dot"></div><div>Background in <strong>behavioural science, computational social science, or psychometrics</strong>.</div></div>
+        <div class="req-item"><div class="dot"></div><div>Publications or open-source work in <strong>LLM simulation or human-behaviour modelling</strong>.</div></div>
+        <div class="req-item"><div class="dot"></div><div>Familiarity with <strong>TypeScript</strong> — their product stack.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="logistics" style="border-bottom:none;">
+  <div class="wrap">
+    <div class="kicker">Logistics</div>
+    <h2>The essentials.</h2>
+    <div class="logi-grid reveal in">
+      <div class="logi"><div class="k">Location</div><div class="v">London, in-office</div></div>
+      <div class="logi"><div class="k">Compensation</div><div class="v">£100k – £180k</div></div>
+      <div class="logi"><div class="k">Equity</div><div class="v">Up to 0.20%</div></div>
+      <div class="logi"><div class="k">Process</div><div class="v">Rolling application</div></div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Node sphere — mirrors the persona-network graphic
+  const canvas = document.getElementById('net');
+  const ctx = canvas.getContext('2d');
+  let W, H, nodes = [];
+  const container = canvas.parentElement;
+
+  function resize(){
+    const rect = container.getBoundingClientRect();
+    W = canvas.width = rect.width;
+    H = canvas.height = rect.height;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const cx = () => W*0.62, cy = () => H*0.42, R = () => Math.min(W,H)*0.34;
+  const NODE_COUNT = 60;
+  for(let i=0;i<NODE_COUNT;i++){
+    const angle = Math.random()*Math.PI*2;
+    const rad = Math.sqrt(Math.random());
+    nodes.push({
+      angle, rad,
+      size: Math.random()*9+3,
+      shade: Math.random(),
+      wobble: Math.random()*Math.PI*2,
+      speed: Math.random()*0.004+0.001
+    });
+  }
+  nodes[0].isAccent = true; nodes[0].rad = 0.15; nodes[0].size = 7;
+
+  function step(t){
+    ctx.clearRect(0,0,W,H);
+    const c = { x: cx(), y: cy() }, r = R();
+    const pts = nodes.map(n=>{
+      const wob = Math.sin(t*n.speed + n.wobble)*0.03;
+      const rr = (n.rad+wob)*r;
+      return {
+        x: c.x + Math.cos(n.angle)*rr,
+        y: c.y + Math.sin(n.angle)*rr*0.85,
+        size:n.size, shade:n.shade, isAccent:n.isAccent
+      };
+    });
+    for(let i=0;i<pts.length;i++){
+      for(let j=i+1;j<pts.length;j++){
+        const a=pts[i], b=pts[j];
+        const dx=a.x-b.x, dy=a.y-b.y;
+        const dist=Math.sqrt(dx*dx+dy*dy);
+        if(dist<70){
+          ctx.strokeStyle = `rgba(23,23,26,${(1-dist/70)*0.10})`;
+          ctx.lineWidth=1;
+          ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+        }
+      }
+    }
+    for(const p of pts){
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+      if(p.isAccent){
+        ctx.fillStyle = '#E9814F';
+        ctx.shadowColor = 'rgba(233,129,79,0.5)';
+        ctx.shadowBlur = 16;
+      } else {
+        const g = 150 + p.shade*90;
+        ctx.fillStyle = `rgb(${g},${g},${g+3})`;
+        ctx.shadowBlur = 0;
+      }
+      ctx.fill();
+    }
+    ctx.shadowBlur = 0;
+    requestAnimationFrame(step);
+  }
+  step(0);
+
+  const observer = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in'); });
+  }, { threshold:0.15 });
+  document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+</script>
+
+</body>
+</html>
